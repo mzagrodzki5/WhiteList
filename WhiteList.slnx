@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Elementy rozwiązania/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="WhiteList/WhiteList.csproj" />
+  <Project Path="WhiteListConsole/WhiteListConsole.csproj" />
+</Solution>
