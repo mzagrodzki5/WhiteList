@@ -1,0 +1,28 @@
+CREATE DATABASE WhiteListDb;
+GO
+USE WhiteListDb;
+GO
+
+CREATE TABLE Podatnicy (
+    ID INT IDENTITY PRIMARY KEY,
+    hash VARCHAR(MAX) NOT NULL,
+    Status BIT
+);
+
+CREATE TABLE Maski (
+    BankID VARCHAR(8) NOT NULL,
+    Wzorzec VARCHAR(26) NOT NULL
+);
+GO
+
+DECLARE @json NVARCHAR(MAX);
+SELECT @json = BulkColumn FROM OPENROWSET (BULK 'B:\Pobrane\20260511.json', SINGLE_CLOB) as j;
+
+INSERT INTO Podatnicy (hash, Status) 
+SELECT value, 1 FROM OPENJSON(@json, '$.skrotyPodatnikowCzynnych');
+
+INSERT INTO Podatnicy (hash, Status) 
+SELECT value, 0 FROM OPENJSON(@json, '$.skrotyPodatnikowZwolnionych');
+
+INSERT INTO Maski (BankID, Wzorzec) 
+SELECT SUBSTRING(value, 3, 8), value FROM OPENJSON(@json, '$.maski');
